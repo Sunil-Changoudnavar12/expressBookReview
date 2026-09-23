@@ -1,0 +1,5 @@
+express
+express-session
+jsonwebtoken
+body-parser
+nodemon

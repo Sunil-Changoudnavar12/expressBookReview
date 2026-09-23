@@ -1,0 +1,34 @@
+const books = [
+  {
+    isbn: "9780131103627",
+    title: "The C Programming Language",
+    author: "Brian W. Kernighan",
+    reviews: [],
+  },
+  {
+    isbn: "9780132350884",
+    title: "Clean Code",
+    author: "Robert C. Martin",
+    reviews: [],
+  },
+  {
+    isbn: "9780201633610",
+    title: "Design Patterns",
+    author: "Erich Gamma",
+    reviews: [],
+  },
+  {
+    isbn: "9780596009205",
+    title: "Head First Java",
+    author: "Kathy Sierra",
+    reviews: [],
+  },
+  {
+    isbn: "9781118531648",
+    title: "Java: The Complete Reference",
+    author: "Herbert Schildt",
+    reviews: [],
+  },
+];
+
+module.exports = books;
