@@ -5,6 +5,11 @@ const authMiddleware = require("../middleware/auth");
 
 const router = express.Router();
 
+books.forEach((book) => {
+  if (!reviews[book.isbn]) reviews[book.isbn] = book.reviews;
+  else book.reviews = reviews[book.isbn];
+});
+
 router.post("/books/:isbn/reviews", authMiddleware, (req, res) => {
   const { isbn } = req.params;
   const { review } = req.body || {};
@@ -43,7 +48,7 @@ router.post("/books/:isbn/reviews", authMiddleware, (req, res) => {
   });
 });
 
-router.put("/books/:isbn/reviews", authMiddleware, (req, res) => {
+router.put(["/books/:isbn/reviews", "/review/:isbn"], authMiddleware, (req, res) => {
   const { isbn } = req.params;
   const { review } = req.body || {};
   const book = books.find((item) => item.isbn === isbn);
@@ -57,13 +62,16 @@ router.put("/books/:isbn/reviews", authMiddleware, (req, res) => {
   }
 
   const bookReviews = reviews[isbn] || [];
-  const myReview = bookReviews.find((item) => item.username === req.user.username);
+  let myReview = bookReviews.find((item) => item.username === req.user.username);
 
-  if (!myReview) {
-    return res.status(403).json({ error: "You do not have a review for this book to update." });
+  if (myReview) {
+    myReview.review = review.trim();
+  } else {
+    myReview = { username: req.user.username, review: review.trim() };
+    bookReviews.push(myReview);
+    reviews[isbn] = bookReviews;
+    book.reviews = bookReviews;
   }
-
-  myReview.review = review.trim();
 
   return res.status(200).json({
     message: "Review updated successfully.",
@@ -71,7 +79,7 @@ router.put("/books/:isbn/reviews", authMiddleware, (req, res) => {
   });
 });
 
-router.delete("/books/:isbn/reviews", authMiddleware, (req, res) => {
+router.delete(["/books/:isbn/reviews", "/review/:isbn"], authMiddleware, (req, res) => {
   const { isbn } = req.params;
   const book = books.find((item) => item.isbn === isbn);
 

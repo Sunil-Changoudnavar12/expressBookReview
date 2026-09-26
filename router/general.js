@@ -4,6 +4,12 @@ const reviews = require("../reviews");
 
 const router = express.Router();
 
+// Keep review reads and the existing reviewer routes on the same arrays.
+books.forEach((book) => {
+  if (!reviews[book.isbn]) reviews[book.isbn] = book.reviews;
+  else book.reviews = reviews[book.isbn];
+});
+
 router.get("/books", (req, res) => {
   res.status(200).json(books);
 });
@@ -60,6 +66,13 @@ router.get("/books/:isbn/reviews", (req, res) => {
     title: book.title,
     reviews: bookReviews,
   });
+});
+
+// IBM final project endpoint: return this book's reviews directly.
+router.get("/review/:isbn", (req, res) => {
+  const book = books.find((item) => item.isbn === req.params.isbn);
+  if (!book) return res.status(404).json({ error: "Book not found." });
+  return res.status(200).json(book.reviews);
 });
 
 module.exports = router;
